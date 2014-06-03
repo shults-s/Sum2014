@@ -21,7 +21,7 @@
 			OutputDirectory="E:\$(UserName)\$(ProjectName)\$(ConfigurationName)"
 			IntermediateDirectory="E:\$(UserName)\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="1"
-			UseOfMFC="1"
+			UseOfMFC="0"
 			CharacterSet="2"
 			>
 			<Tool
@@ -43,7 +43,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="X:\TGRKIT\INCLUDE;$(CG_INC_PATH);$(DXSDK_DIR)\Include;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -96,7 +96,7 @@
 			OutputDirectory="E:\$(UserName)\$(ProjectName)\$(ConfigurationName)"
 			IntermediateDirectory="E:\$(UserName)\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="1"
-			UseOfMFC="1"
+			UseOfMFC="0"
 			CharacterSet="2"
 			WholeProgramOptimization="1"
 			>
@@ -120,7 +120,7 @@
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="X:\TGRKIT\INCLUDE;$(CG_INC_PATH);$(DXSDK_DIR)\Include;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
 				RuntimeLibrary="1"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
