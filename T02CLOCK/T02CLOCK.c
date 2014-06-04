@@ -73,6 +73,44 @@ VOID DrawArrow( HDC hDC, INT Xc, INT Yc, INT L, INT W, FLOAT Angle )
   Polygon(hDC, pts_draw, sizeof pts / sizeof pts[0]);
 }
 
+VOID FlipFullScreen( HWND hWnd )
+{
+  static BOOL IsFullScreen = FALSE; /* текущий режим */
+  static RECT SaveRC;               /* сохраненный размер */
+
+  if (!IsFullScreen)
+  {
+    RECT rc;
+
+    /* сохраняем старый размер окна */
+    GetWindowRect(hWnd, &SaveRC);
+
+    /* переходим в полный экран */
+    rc.left = 0;
+    rc.top = 0;
+    rc.right = GetSystemMetrics(SM_CXSCREEN);
+    rc.bottom = GetSystemMetrics(SM_CYSCREEN);
+
+    AdjustWindowRect(&rc, GetWindowLong(hWnd, GWL_STYLE), FALSE);
+
+    SetWindowPos(hWnd, HWND_TOPMOST,
+      rc.left, rc.top,
+      rc.right - rc.left, rc.bottom - rc.top,
+      SWP_NOOWNERZORDER);
+
+    IsFullScreen = TRUE;
+  }
+  else
+  {
+    /* восстанавливаем размер окна */
+    SetWindowPos(hWnd, HWND_TOPMOST,
+      SaveRC.left, SaveRC.top,
+      SaveRC.right - SaveRC.left, SaveRC.bottom - SaveRC.top,
+      SWP_NOOWNERZORDER);
+    IsFullScreen = FALSE;
+  }
+}
+
 LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
                                WPARAM wParam, LPARAM lParam )
 {
@@ -96,6 +134,12 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
     hBmClock = LoadImage(NULL, "bg.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
     return 0;
 
+  case WM_CHAR:
+    if ((CHAR)wParam == 27)
+      DestroyWindow(hWnd);
+    if ((CHAR)wParam == 'f')
+      FlipFullScreen(hWnd);
+    return 0;
 
   case WM_SIZE:
     W = LOWORD(lParam);
@@ -126,11 +170,13 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
     hMemDC = CreateCompatibleDC(hDC);
     SelectObject(hMemDC, hBmFrame);
 
+    SetDCBrushColor(hDC, RGB(255, 255, 255));
+    Rectangle(hMemDC, 0, 0, W, H);
+
     hMemDCClock = CreateCompatibleDC(hDC);
     SelectObject(hMemDCClock, hBmClock);
     GetObject(hBmClock, sizeof(bm), &bm);
     BitBlt(hMemDC, W / 2 - bm.bmWidth / 2, H / 2 - bm.bmHeight / 2, bm.bmWidth, bm.bmHeight, hMemDCClock, 0, 0, SRCCOPY);
-
     GetLocalTime(&st);
 
     DrawArrow(hMemDC, W / 2, H / 2, 100, 20, (-(st.wHour % 12 + st.wMinute / 60.0) / 12.0) * 2 * PI);
