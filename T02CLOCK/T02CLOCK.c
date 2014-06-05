@@ -81,23 +81,28 @@ VOID FlipFullScreen( HWND hWnd )
   if (!IsFullScreen)
   {
     RECT rc;
+    HMONITOR hmon;
+    MONITORINFOEX moninfo;
 
     /* сохраняем старый размер окна */
     GetWindowRect(hWnd, &SaveRC);
 
+    /* определяем в каком мониторе находится окно */
+    hmon = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
+
+    /* получаем информацию для монитора */
+    moninfo.cbSize = sizeof(moninfo);
+    GetMonitorInfo(hmon, (MONITORINFO *)&moninfo);
+
     /* переходим в полный экран */
-    rc.left = 0;
-    rc.top = 0;
-    rc.right = GetSystemMetrics(SM_CXSCREEN);
-    rc.bottom = GetSystemMetrics(SM_CYSCREEN);
+    rc = moninfo.rcMonitor;
 
     AdjustWindowRect(&rc, GetWindowLong(hWnd, GWL_STYLE), FALSE);
 
     SetWindowPos(hWnd, HWND_TOPMOST,
       rc.left, rc.top,
-      rc.right - rc.left, rc.bottom - rc.top,
+      rc.right - rc.left, rc.bottom - rc.top + 201,
       SWP_NOOWNERZORDER);
-
     IsFullScreen = TRUE;
   }
   else
@@ -119,6 +124,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
   PAINTSTRUCT ps;
   POINT pt;
   BITMAP bm;
+  MINMAXINFO *minmax;
   static INT cc = 0;
   static HBITMAP hBmClock, hBmFrame;
   static INT W, H;
@@ -139,6 +145,12 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
       DestroyWindow(hWnd);
     if ((CHAR)wParam == 'f')
       FlipFullScreen(hWnd);
+    return 0;
+
+  case WM_GETMINMAXINFO:
+    minmax = (MINMAXINFO *)lParam;
+    minmax->ptMaxTrackSize.y = GetSystemMetrics(SM_CYMAXTRACK) +
+    GetSystemMetrics(SM_CYCAPTION) + GetSystemMetrics(SM_CYBORDER) * 2;
     return 0;
 
   case WM_SIZE:
