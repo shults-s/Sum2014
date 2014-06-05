@@ -7,8 +7,6 @@
 double A[MAX][MAX], GlobalDeterminant = 0;
 int P[MAX], Par, N;
 
-//INT P[N] = {1,2,3,4,5}, Count = 0, Par = 0;
-
 /*VOID Write()
 {
   FILE *f;
@@ -59,6 +57,22 @@ VOID Swap(int *n, int *m)
   *m = tmp;
 }
 
+VOID SwapRow(int n, int m)
+{
+  int i;
+
+  for(i = 0; i < MAX; i++)
+    Swap(&A[n][i], &A[m][i]);
+}
+
+VOID SwapLine(int n, int m)
+{
+  int i;
+
+  for(i = 0; i < MAX; i++)
+    Swap(&A[i][n], &A[i][m]);
+}
+
 VOID Go ( INT Pos )
 {
   int i = 0;
@@ -91,6 +105,44 @@ VOID Go ( INT Pos )
 
 }
 
+VOID Gauss()
+{
+  int i, j, k, ki, kj, maxi, maxj;
+
+  for(i = 0; i < N; i++)
+  {
+    maxi = i;
+    maxj = i;
+
+    for(ki = i + 1; ki < N; ki++)
+      for(kj = i; kj < N; kj++)
+        if (A[ki][kj] > A[maxi][maxj])
+        {
+          maxi = ki;
+          maxj = kj;
+        }
+
+    if (i != maxi)
+      SwapLine(i, maxi);
+    if (i != maxj)
+      SwapRow(i, maxj);
+
+    if (A[i][i] == 0)
+      return 0;
+
+    for(k = i; k < N; k++)
+      for(j = i; j < N; j++)
+        A[k][j] -= A[i][j] * A[k][i] / A[i][i];
+
+    for(j = 1; j < N; j++)
+      A[j][i] -= A[1][i] * A[j][1] / A[i][1];
+  }
+
+  GlobalDeterminant = 1;
+  for(i = 0; i < N; i++)
+    GlobalDeterminant *= A[i][i];
+}
+
 INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
                     CHAR *CmdLine, INT ShowCmd )
 {
@@ -102,7 +154,8 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
   Load("load.txt");
 
-  Go(0);
+  //Go(0);
+  Gauss();
 
   if ((f = fopen("E:\\spr03\\a.log", "w")) != NULL)
   {
