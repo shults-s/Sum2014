@@ -127,6 +127,12 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
   MINMAXINFO *minmax;
   static HBITMAP hBm;
   static INT W, H;
+  BYTE Keys[256];
+
+  GetKeyboardState(Keys);
+
+  if (Keys['S'] & 0x80)
+    DestroyWindow(hWnd);
 
   switch (Msg)
   {
