@@ -3,6 +3,9 @@
 #ifndef __VEC_H_
 #define __VEC_H_
 
+#define DEGREE2RADIANL 0.01745329251994329576L
+long double MultiplierDegree2Radian = DEGREE2RADIANL;
+
 __inline VEC VecDotVec( VEC V1, VEC V2 )
 {
   return V1.X * V2.X + V1.Y * V2.Y + V1.Z * V2.Z;
@@ -56,23 +59,27 @@ MATR MatrScale( DBL Sx, DBL Sy, DBL Sz )
 MATR MatrRotateX( DBL AngleInDegree )
 {
   MATR m;
-  DBL a, si, co;
+  DBL a, sine, cosine;
 
-  a = D2R(AngleInDegree);
-  si = sin(a);
-  co = cos(a);
+  __asm {
+    fld AngleInDegree
+    fmul MultiplierDegree2Radian
+    fsincos
+    fstp cosine
+    fstp sine + 88
+  }
 
   m.A[0][0] = 1;
   m.A[0][1] = 0;
   m.A[0][2] = 0;
   m.A[0][3] = 0;
   m.A[1][0] = 0;
-  m.A[1][1] = co;
-  m.A[1][2] = si;
+  m.A[1][1] = cosine;
+  m.A[1][2] = sine;
   m.A[1][3] = 0;
   m.A[2][0] = 0;
-  m.A[2][1] = -si;
-  m.A[2][2] = co;
+  m.A[2][1] = -sine;
+  m.A[2][2] = cosine;
   m.A[2][3] = 0;
   m.A[3][0] = 0;
   m.A[3][1] = 0;
@@ -84,23 +91,27 @@ MATR MatrRotateX( DBL AngleInDegree )
 MATR MatrRotateY( DBL AngleInDegree )
 {
   MATR m;
-  DBL a, si, co;
+  DBL a, sine, cosinene;
 
-  a = D2R(AngleInDegree);
-  si = sin(a);
-  co = cos(a);
+  __asm {
+    fld AngleInDegree
+    fmul MultiplierDegree2Radian
+    fsincos 
+    fstp cosine
+    fstp sine + 88
+  }
 
-  m.A[0][0] = co;
+  m.A[0][0] = cosinene;
   m.A[0][1] = 0;
-  m.A[0][2] = -si;
+  m.A[0][2] = -sine;
   m.A[0][3] = 0;
   m.A[1][0] = 0;
   m.A[1][1] = 1;
   m.A[1][2] = 0;
   m.A[1][3] = 0;
-  m.A[2][0] = si;
+  m.A[2][0] = sine;
   m.A[2][1] = 0;
-  m.A[2][2] = co;
+  m.A[2][2] = cosinene;
   m.A[2][3] = 0;
   m.A[3][0] = 0;
   m.A[3][1] = 0;
@@ -109,26 +120,30 @@ MATR MatrRotateY( DBL AngleInDegree )
   return m;
 }
 
-MATR MatrRotateZ( DBL AngleInDegree )
+MATR MatrRotateZ(DBL AngleInDegree )
 {
   MATR m;
-  DBL a, si, co;
+  DBL a, sine, cosinene;
 
-  a = D2R(AngleInDegree);
-  si = sin(a);
-  co = cos(a);
+  __asm {
+    fld AngleInDegree
+    fmul MultiplierDegree2Radian
+    fsincos 
+    fstp cosine
+    fstp sine + 88
+  }
 
-  m.A[0][0] = co;
-  m.A[0][1] = si;
-  m.A[0][2] = 0;
+  m.A[0][0] = cosinene;
+  m.A[0][1] = 0;
+  m.A[0][2] = -sine;
   m.A[0][3] = 0;
-  m.A[1][0] = -si;
-  m.A[1][1] = co;
+  m.A[1][0] = 0;
+  m.A[1][1] = 1;
   m.A[1][2] = 0;
   m.A[1][3] = 0;
-  m.A[2][0] = 0;
+  m.A[2][0] = sine;
   m.A[2][1] = 0;
-  m.A[2][2] = 1;
+  m.A[2][2] = cosinene;
   m.A[2][3] = 0;
   m.A[3][0] = 0;
   m.A[3][1] = 0;
@@ -140,28 +155,33 @@ MATR MatrRotateZ( DBL AngleInDegree )
 MATR MatrRotate( DBL AngleInDegree,
                  DBL X, DBL Y, DBL Z )
 {
-  DBL a, si, co, len;
+  DBL a, sine, cosine, len;
   MATR m;
 
-  a = D2R(AngleInDegree);
-  si = sin(a);
-  co = cos(a);
+  __asm {
+    fld AngleInDegree
+    fmul MultiplierDegree2Radian
+    fsincos
+    fstp cosine
+    fstp sine + 88
+  }
+
   len = X * X + Y * Y + Z * Z;
   if (len != 0 && len != 1)
     len = sqrt(len), X /= len, Y /= len, Z /= len;
-  X *= si;
-  Y *= si;
-  Z *= si;
+  X *= sine;
+  Y *= sine;
+  Z *= sine;
   m.A[0][0] = 1 - 2 * (Y * Y + Z * Z);
-  m.A[0][1] = 2 * X * Y - 2 * co * Z;
-  m.A[0][2] = 2 * co * Y + 2 * X * Z;
+  m.A[0][1] = 2 * X * Y - 2 * cosine * Z;
+  m.A[0][2] = 2 * cosine * Y + 2 * X * Z;
   m.A[0][3] = 0;
-  m.A[1][0] = 2 * X * Y + 2 * co * Z;
+  m.A[1][0] = 2 * X * Y + 2 * cosine * Z;
   m.A[1][1] = 1 - 2 * (X * X + Z * Z);
-  m.A[1][2] = 2 * Y * Z - 2 * co * X;
+  m.A[1][2] = 2 * Y * Z - 2 * cosine * X;
   m.A[1][3] = 0;
-  m.A[2][0] = 2 * X * Z - 2 * co * Y;
-  m.A[2][1] = 2 * co * X + 2 * Y * Z;
+  m.A[2][0] = 2 * X * Z - 2 * cosine * Y;
+  m.A[2][1] = 2 * cosine * X + 2 * Y * Z;
   m.A[2][2] = 1 - 2 * (X * X + Y * Y);
   m.A[2][3] = 0;
   m.A[3][0] = 0;
