@@ -1,7 +1,7 @@
 /* FILENAME: IMAGE.H
  * PROGRAMMER: SS3
  * PURPOSE: Image handle declaration module.
- * LAST UPDATE: 06.06.2014
+ * LAST UPDATE: 07.06.2014
  */
 
 #ifndef __IMAGE_H_
@@ -12,9 +12,10 @@
 /* Структура хранения изображения */
 typedef struct tagIMAGE
 {
-  INT W, H;    /* Размер изображения */
-  HBITMAP hBm; /* Дескриптор загруженного изображения */
-  DWORD *Bits; /* Цвета точек */
+  INT W, H;
+  HBITMAP hBm;
+  HDC hDC;
+  DWORD *Bits;
 } IMAGE;
 
 /* Функция загрузки изображения */
@@ -26,6 +27,7 @@ VOID ImageFree( IMAGE *Img );
 /* Функция получения цвета точки изображения */
 DWORD ImageGetP( IMAGE *Img, INT X, INT Y );
 
-#endif /* __IMAGE_H_ */
+/* Функция рисования изображения */
+VOID ImageDraw( IMAGE *Img, HDC hDC, INT X, INT Y, INT LogOp );
 
-/* END OF 'IMAGE.H' FILE */
+#endif

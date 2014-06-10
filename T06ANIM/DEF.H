@@ -19,6 +19,4 @@ typedef unsigned __int64 UINT64;
 typedef float FLT;
 typedef double DBL;
 
-#endif /* __DEF_H_ */
-
-/* END OF 'DEF.H' FILE */
+#endif

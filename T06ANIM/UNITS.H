@@ -9,11 +9,14 @@
 
 #include "anim.h"
 
-/* Функция создания объекта анимации */
-ss3UNIT * SS3_CowUnitCreate( VOID );
-
 /* Функция создания информационного объекта анимации */
 ss3UNIT * SS3_InfoUnitCreate( VOID );
+
+/* Функция создания информационного объекта анимации */
+ss3UNIT * SS3_MyUnitCreate( VOID );
+
+/* Функция создания информационного объекта анимации */
+ss3UNIT * SS3_CubeUnitCreate( VOID );
 
 #endif /* __UNITS_H_ */
 

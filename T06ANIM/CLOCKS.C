@@ -13,7 +13,7 @@
 
 typedef struct tagss3UNIT_CLOCKS
 {
-  SS3_UNIT_BASE_FIELDS; /* ¬ключение базовых полей */
+  SS3_UNIT_BASE_FIELDS; // ¬ключение базовых полей
   HBITMAP hBm;
 } ss3UNIT_CLOCKS;
 

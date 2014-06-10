@@ -1,20 +1,11 @@
 /* FILENAME: IMAGE.C
  * PROGRAMMER: SS3
- * PURPOSE: Image handle functions
- * LAST UPDATE: 06.06.2014
+ * PURPOSE: Image handle functions.
+ * LAST UPDATE: 07.06.2014
  */
 
 #include "image.h"
 
-/* Функция загрузки изображения.
- * АРГУМЕНТЫ:
- *   - указатель на обрабатываемую картинку:
- *       IMAGE *Img;
- *   - имя загружаемого файла:
- *       HDC hDC;
- * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ:
- *   (BOOL) результат загрузки (TRUE - успешно).
- */
 BOOL ImageLoad( IMAGE *Img, CHAR *FileName )
 {
   HBITMAP hBmLoad;
@@ -23,13 +14,14 @@ BOOL ImageLoad( IMAGE *Img, CHAR *FileName )
     return FALSE;
   Img->W = Img->H = 0;
   Img->hBm = NULL;
+  Img->hDC = NULL;
   Img->Bits = NULL;
   if ((hBmLoad = LoadImage(NULL, FileName,
          IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE)) != NULL)
   {
     BITMAP bm;
     BITMAPINFOHEADER bmi;
-    HDC hDC, hMemDC1, hMemDC2;
+    HDC hDC, hMemDC;
 
     GetObject(hBmLoad, sizeof(bm), &bm);
     Img->W = bm.bmWidth;
@@ -50,48 +42,34 @@ BOOL ImageLoad( IMAGE *Img, CHAR *FileName )
       (VOID **)&Img->Bits, NULL, 0);
 
     hDC = GetDC(NULL);
-    hMemDC1 = CreateCompatibleDC(hDC);
-    hMemDC2 = CreateCompatibleDC(hDC);
+    hMemDC = CreateCompatibleDC(hDC);
+    Img->hDC = CreateCompatibleDC(hDC);
 
-    SelectObject(hMemDC1, hBmLoad);
-    SelectObject(hMemDC2, Img->hBm);
-    BitBlt(hMemDC2, 0, 0, Img->W, Img->H, hMemDC1, 0, 0, SRCCOPY);
+    SelectObject(hMemDC, hBmLoad);
+    SelectObject(Img->hDC, Img->hBm);
+    BitBlt(Img->hDC, 0, 0, Img->W, Img->H, hMemDC, 0, 0, SRCCOPY);
 
-    DeleteDC(hMemDC1);
-    DeleteDC(hMemDC2);
+    DeleteDC(hMemDC);
     ReleaseDC(NULL, hDC);
     DeleteObject(hBmLoad);
   }
 
   return Img->hBm != NULL;
-} /* End of 'ImageLoad' function */
+}
 
-/* Функция освобождения памяти из-под изображения.
- * АРГУМЕНТЫ:
- *   - указатель на обрабатываемую картинку:
- *       IMAGE *Img;
- * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ: Нет.
- */
 VOID ImageFree( IMAGE *Img )
 {
   if (Img == NULL)
     return;
   if (Img->hBm != NULL)
     DeleteObject(Img->hBm);
+  DeleteDC(Img->hDC);
   Img->W = Img->H = 0;
   Img->hBm = NULL;
+  Img->hDC = NULL;
   Img->Bits = NULL;
-} /* End of 'ImageFree' function */
+}
 
-/* Функция получения цвета точки изображения.
- * АРГУМЕНТЫ:
- *   - указатель на обрабатываемую картинку:
- *       IMAGE *Img;
- *   - координаты получаемой точки:
- *       INT X, Y;
- * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ:
- *   (DWORD) цвет получаемой точки.
- */
 DWORD ImageGetP( IMAGE *Img, INT X, INT Y )
 {
   if (Img == NULL)
@@ -110,6 +88,11 @@ DWORD ImageGetP( IMAGE *Img, INT X, INT Y )
     return RGB(r, g, b);
   }
   return 0;
-} /* End of 'ImageGetP' function */
+}
 
-/* END OF 'IMAGE.C' FILE */
+VOID ImageDraw( IMAGE *Img, HDC hDC, INT X, INT Y, INT LogOp )
+{
+  if (Img == NULL)
+    return;
+  BitBlt(hDC, X, Y, Img->W, Img->H, Img->hDC, 0, 0, LogOp);
+}

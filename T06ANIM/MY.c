@@ -34,7 +34,7 @@ static VOID MyUnitRender( ss3UNIT_MY *Unit, ss3ANIM *Ani )
 {
   //               Разрешаем картинке ездить только в переделах экрана
   //               (домножаем, т.к. изначально интервал значений джойстика мал)
-  INT W = Ani->W + Ani->JZ * Ani->W / 1.3, Y = Ani->JR * Ani->H / 1.3;
+  INT W = Ani->W/* + Ani->JZ * Ani->W / 1.3*/, Y = 0/*Ani->JR * Ani->H / 1.3*/;
   BITMAP bm;
   HDC hScrDC, hMemDC1;
 
