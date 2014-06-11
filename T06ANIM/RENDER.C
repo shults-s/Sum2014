@@ -16,27 +16,38 @@ ss3CAMERA SS3_RndCam;
 DBL
   SS3_RndWs = 30, SS3_RndHs = 30,
                  // Размер коровы
-  SS3_RndWp = 4, SS3_RndHp = 0.3,
-  SS3_RndProjDist = 5;
+  SS3_RndWp = 4, SS3_RndHp = 3.5/*17*/,
+  SS3_RndProjDist = 1;
 
 /* Матрицы */
 MATR
   SS3_RndMatrWorld = SS3_UNIT_MATR,
-  SS3_RndMatrView = SS3_UNIT_MATR;
+  SS3_RndMatrView = SS3_UNIT_MATR,
+  SS3_RndMatrProjection = SS3_UNIT_MATR;
+
+static MATR
+  SS3_RndMatrWorldViewProj;
+
+VOID SS3_RndMatrSetup( VOID )
+{
+  SS3_RndMatrWorldViewProj =
+    MatrMulMatr(MatrMulMatr(SS3_RndMatrWorld, SS3_RndMatrView),
+      SS3_RndMatrProjection);
+}
 
 POINT SS3_RndWorldToScreen( VEC P )
 {
   POINT Ps;
   VEC Pp;
 
-  Pp = VecMulMatr(P, MatrMulMatr(SS3_RndMatrWorld, SS3_RndMatrView));
+  /* преобразование СК */
+  Pp = VecMulMatr(P, SS3_RndMatrWorldViewProj);
   
   /* проецирование */
-  Pp.X *= SS3_RndProjDist / Pp.Z;
-  Pp.Y *= SS3_RndProjDist / Pp.Z;
-
-  Ps.x = ( Pp.X + SS3_RndWp / 2) / SS3_RndWp * (SS3_RndWs - 1);
-  Ps.y = (-Pp.Y + SS3_RndHp / 2) / SS3_RndHp * (SS3_RndHs - 1);
+  /*Ps.x = (Pp.X + SS3_RndWp / 2) / SS3_RndWp * (SS3_RndWs - 1);
+  Ps.y = (-Pp.Y + SS3_RndHp / 2) / SS3_RndHp * (SS3_RndHs - 1);*/
+  Ps.x = ( Pp.X + 0.5) * (SS3_RndWs - 1);
+  Ps.y = (-Pp.Y + 0.5) * (SS3_RndHs - 1);
   return Ps;
 }
 
@@ -102,21 +113,29 @@ VOID SS3_RndGObjFree( ss3GOBJ *GObj )
 
 VOID SS3_RndGObjDraw( ss3GOBJ *GObj, HDC hDC )
 {
-  INT i, j, s = 1;
-  POINT pt[3];
+  INT i;
+  POINT *pts;
+
+  if ((pts = malloc(sizeof(POINT) * GObj->NumOfV)) == NULL)
+    return;
+
+  /* обновляем матрицу преобразования */
+  SS3_RndMatrSetup();
 
   for (i = 0; i < GObj->NumOfV; i++)
-  {
-    pt[0] = SS3_RndWorldToScreen(GObj->V[i]);
-    Ellipse(hDC, pt[0].x - s, pt[0].y - s, pt[0].x + s, pt[0].y + s);
-  }
+    pts[i] = SS3_RndWorldToScreen(GObj->V[i]);
+
   for (i = 0; i < GObj->NumOfF; i++)
   {
-    for (j = 0; j < 3; j++)
-      pt[j] = SS3_RndWorldToScreen(GObj->V[GObj->F[i][j]]);
-    MoveToEx(hDC, pt[0].x, pt[0].y, NULL);
-    LineTo(hDC, pt[1].x, pt[1].y);
-    LineTo(hDC, pt[2].x, pt[2].y);
-    LineTo(hDC, pt[0].x, pt[0].y);
+    INT
+      n0 = GObj->F[i][0],
+      n1 = GObj->F[i][1],
+      n2 = GObj->F[i][2];
+
+    MoveToEx(hDC, pts[n0].x, pts[n0].y, NULL);
+    LineTo(hDC, pts[n1].x, pts[n1].y);
+    LineTo(hDC, pts[n2].x, pts[n2].y);
+    LineTo(hDC, pts[n0].x, pts[n0].y);
   }
+  free(pts);
 }

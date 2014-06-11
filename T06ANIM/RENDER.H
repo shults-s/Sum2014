@@ -36,7 +36,9 @@ extern DBL
 
 extern MATR
   SS3_RndMatrWorld,
-  SS3_RndMatrView;
+  SS3_RndMatrView,
+  SS3_RndMatrProjection,
+  SS3_RndMatrWorldViewProj;
 
 /* Функция преобразования из мировой системы коорлинат в кадр */
 POINT SS3_RndWorldToScreen( VEC P );
