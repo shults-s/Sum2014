@@ -33,7 +33,7 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
   hWnd =
     CreateWindow(WND_CLASS,
-                 "Title",
+                 "Globe",
                  WS_OVERLAPPEDWINDOW,
                  CW_USEDEFAULT , CW_USEDEFAULT,
                  400, 400,
