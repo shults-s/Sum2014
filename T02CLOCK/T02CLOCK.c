@@ -31,7 +31,7 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
   hWnd =
     CreateWindow(WND_CLASS,
-                 "Title",
+                 "Clocks",
                  WS_OVERLAPPEDWINDOW,
                  CW_USEDEFAULT , CW_USEDEFAULT,
                  400, 400,
