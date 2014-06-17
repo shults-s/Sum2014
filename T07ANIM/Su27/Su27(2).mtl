@@ -1,0 +1,36 @@
+# Blender MTL File: 'None'
+# Material Count: 3
+newmtl glass_Glass_Cockpit.bmp
+Ns 5.882353
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.752941 0.752941 0.752941
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Glass_Cockpit3.bmp
+
+
+newmtl plane_Su-27_Flanker_P01.bmp
+Ns 5.882353
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.752941 0.752941 0.752941
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Su-27_Flanker_P01.bmp
+map_Bump Su-27_Flanker_N.bmp
+
+
+newmtl seat_Eject_Seat.bmp
+Ns 5.882353
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.752941 0.752941 0.752941
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Eject_Seat.bmp
+
+
