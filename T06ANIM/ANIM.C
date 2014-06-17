@@ -269,9 +269,9 @@ VOID SS3_AnimFlipFullScreen( VOID )
 
     AdjustWindowRect(&rc, GetWindowLong(SS3_Anim.hWnd, GWL_STYLE), FALSE);
 
-    SetWindowPos(SS3_Anim.hWnd, HWND_TOP,
+    SetWindowPos(SS3_Anim.hWnd, HWND_TOPMOST,
       rc.left, rc.top,
-      rc.right - rc.left, rc.bottom - rc.top + 201,
+      rc.right - rc.left, rc.bottom - rc.top,
       SWP_NOOWNERZORDER);
     IsFullScreen = TRUE;
   }

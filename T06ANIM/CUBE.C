@@ -33,10 +33,17 @@ static VOID CubeUnitResponse( ss3UNIT_CUBE *Unit, ss3ANIM *Ani )
 
 static VOID CubeUnitRender( ss3UNIT_CUBE *Unit, ss3ANIM *Ani )
 {
+  static INT Direct = 1;
   DBL Scale = Ani->JX / 10;
 
   SS3_RndMatrView = MatrViewLookAt(VecMulMatr(VecSet(0, 0, 1), MatrRotateX(-15 + 30 * Ani->JY)), VecSet(0, 0, 0), VecSet(0, 1, 0));
-  SS3_RndMatrWorld = MatrRotateY(Ani->Time * 20);
+
+  if (Ani->JButs[4])
+    Direct = -1;
+  else if (Ani->JButs[5])
+    Direct = 1;
+
+  SS3_RndMatrWorld = MatrRotateY(Ani->Time * Direct * 20);
   SS3_RndMatrWorld = MatrMulMatr(SS3_RndMatrWorld, MatrScale(0.30 + Scale, 0.30 + Scale, 0.30 + Scale));
 
   SetDCPenColor(Ani->hDC, RGB(255, 255, 255));
