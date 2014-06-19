@@ -1,0 +1,28 @@
+newmtl fuselage
+Kd 0.996078 0.996078 0.996078
+Ks 0.996078 0.996078 0.996078
+Ns 100.000000
+d 1.000000
+illum 2
+map_Kd c:\users\spok\desktop\b-361.png
+newmtl wingL
+Kd 0.996078 0.996078 0.996078
+Ks 0.996078 0.996078 0.996078
+Ns 100.000000
+d 1.000000
+illum 2
+map_Kd c:\users\spok\desktop\b-363.png
+newmtl wingR
+Kd 0.996078 0.996078 0.996078
+Ks 0.996078 0.996078 0.996078
+Ns 100.000000
+d 1.000000
+illum 2
+map_Kd c:\users\spok\desktop\b-365.png
+newmtl props
+Kd 0.996078 0.996078 1.000000
+Ks 0.996078 0.996078 1.000000
+Ns 100.000000
+d 1.000000
+illum 2
+map_Kd c:\users\spok\desktop\b-367.png
